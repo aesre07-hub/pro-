@@ -29,13 +29,13 @@ from telegram.ext import (
 from groq import Groq
 
 # =====================================================
-#  الإعدادات
+#  الإعدادات (تم التعديل لاستخدام المتغيرات البيئية)
 # =====================================================
-BOT_TOKEN         = "8648009848:AAGYdZoFKjMBB_dX38BZ6jn1FKPAAJM_8uo"
-DEVELOPER_ID      = 7138966028
+BOT_TOKEN         = os.getenv("BOT_TOKEN")
+DEVELOPER_ID      = int(os.getenv("DEVELOPER_ID", 7138966028))
 OWNER_CHANNEL     = "https://t.me/agz_r"
 OWNER_ACCOUNT     = "https://t.me/I_peil"
-GROQ_API_KEY      = "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"
+GROQ_API_KEY      = os.getenv("GROQ_API_KEY")
 
 # =====================================================
 #  السجل
@@ -386,6 +386,15 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 #  نقطة الدخول
 # =====================================================
 def main():
+    # تأكد من وجود التوكن قبل التشغيل
+    if not BOT_TOKEN:
+        logger.error("❌ BOT_TOKEN غير موجود! أضفه في متغيرات البيئة")
+        return
+    
+    if not GROQ_API_KEY:
+        logger.error("❌ GROQ_API_KEY غير موجود! أضفه في متغيرات البيئة")
+        return
+
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start",  cmd_start))
